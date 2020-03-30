@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import {Satellite} from './satellite';
+import { OrbitListComponent } from './orbit-list/orbit-list.component';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +10,30 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'orbit-report';
+  sourceList: Satellite[];
+
+  constructor() {
+    this.sourceList = [];
+   let satellitesUrl = 'https://handlers.education.launchcode.org/static/satellites.json';
+
+   window.fetch(satellitesUrl).then(function(response) {
+      response.json().then(function(data) {
+
+         let fetchedSatellites = data.satellites;
+          for (let i = 0; i < fetchedSatellites.length; i++) {
+            
+           let satellite = new Satellite(fetchedSatellites[i].name, fetchedSatellites[i].type, fetchedSatellites[i].LaunchDate, fetchedSatellites[i].orbitType, fetchedSatellites[i].operational);
+            
+           this.sourceList.push(satellite);
+
+          }
+        }.bind(this));  
+
+          
+       
+      }.bind(this));
+    
+  }
 }
+
+
